@@ -1,0 +1,58 @@
+<div class="container-fluid mb-5">
+	<h1>Template Driven Forms</h1>
+	<form #userform="ngForm">
+		{{userform.value | json}}
+		<hr/>
+		{{ userModel| json}}
+
+		<!-- below we have used: property, class binding, two-way binding, template reference,  -->
+		<!-- Here below it shows a clear-cut difference between 'attribute and property' so, for ex: class=" " is attribute  and [class.method]=" " is property.-->
+		<div class="form-group">
+			<label>Name: </label>
+			<input required type="text" #name="ngModel" name="name" class="form-control" [class.is-invalid]="name.invalid && name.touched" [(ngModel)]="userModel.name">
+			<small [class.d-none]="name.valid || name.untouched" class="text-danger"> name is required </small>
+		</div>
+		<div class="form-group">
+			<label>Email: </label>
+			<input type="email" name="email" class="form-control" [(ngModel)]="userModel.email">
+		</div>
+		<div class="form-control">
+			<label>Phone: </label>
+			<input type="tel" name="phone" class="form-control" [(ngModel)]="userModel.phone" #phone="ngModel" pattern="^[0-9]{10}$" [class.is-invalid]="phone.invalid && phone.touched" required>
+			<!-- <small [class.d-none]="phone.valid || phone.untouched" class="text-danger"> required & should be 10 digits number</small> -->
+			<div *ngIf="phone.errors || (phone.invalid && phone.touched)">
+				<small class="text-danger" *ngIf="phone.errors.required">cannot be empty</small>
+				<small class="text-danger" *ngIf="phone.errors.pattern">should be 10 digits</small>
+			</div>
+		</div>
+
+		<div class="form-group">
+			<select (blur)="validateTopic(topic.value)" (change)="validateTopic(topic.value)" class="custom-select" #topic="ngModel" name="topic" [(ngModel)]="userModel.topic" [class.is-invalid]="hasError">
+				<option>I am interested in</option>
+				<option *ngFor="let topic of topics"> {{ topic }} </option>
+			</select>
+			<p>{{topic.valid}} {{hasError}}</p>
+			<small class="text-danger" *ngIf="topic.value === 'I am interested in'">select one of the options</small>
+
+		</div>
+		<div class="mb-3">
+			<label>Time preference</label>
+			<div class="form-check">
+				<input type="radio" name="timePreference" value="morning"class="form-check-input" [(ngModel)]="userModel.timePreference">
+				 <label class="form-check-label" for="timePreference">Morning (9AM-12PM)</label>
+			</div>
+			<div class="form-check">
+				<input type="radio" name="timePreference" value="evening"class="form-check-input" [(ngModel)]="userModel.timePreference">
+				 <label class="form-check-label" for="timePreference">Evening (5PM-8PM)</label>
+			</div>
+		</div>
+		<div class="form-check mb-3">
+			<input type="checkbox" name="subscribe" value="evening"class="form-check-input" [(ngModel)]="userModel.subscribe">
+			 <label class="form-check-label">Send me promotional offers</label>
+		</div>
+
+		<button [disabled]="userform.form.invalid" class="btn btn-primary" type="submit">Submit form</button>
+		<small *ngIf="userform.form.invalid">All fields should be satisfied!</small>
+
+	</form>
+</div>
